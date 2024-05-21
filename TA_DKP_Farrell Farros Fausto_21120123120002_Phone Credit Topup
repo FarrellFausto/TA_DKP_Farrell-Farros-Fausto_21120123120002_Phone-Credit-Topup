@@ -9,13 +9,11 @@ class PulsaApp:
         self.root.title("Pembelian Pulsa")
         self.root.resizable(width=0, height=0)
 
-        # Mengubah warna latar belakang menjadi biru
         self.root.configure(bg="#87CEEB")
 
         menu = Menu(root)
         self.root.config(menu=menu)
 
-        # Tambahkan menu untuk fullscreen dan minimize
         view_menu = Menu(menu, tearoff=0)
         view_menu.add_command(label="Fullscreen", command=self.toggle_fullscreen)
         view_menu.add_command(label="Minimize", command=self.minimize_window)
@@ -44,7 +42,6 @@ class PulsaApp:
         self.button_pay = Button(root, text="Pay", command=self.pay, font=("Arial", 10), bg="#4CAF50", fg="#fff", bd=0, relief="flat", activebackground="#45a049")
         self.button_pay.place(x=140, y=140)
 
-        # Attributes
         self._selected_network = ""
         self._selected_price = 0
         self._phone_number = ""
