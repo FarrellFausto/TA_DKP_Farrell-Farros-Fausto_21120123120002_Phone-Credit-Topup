@@ -9,20 +9,25 @@ class PulsaApp:
         self.root.title("Pembelian Pulsa")
         self.root.resizable(width=0, height=0)
 
+        # Mengubah warna latar belakang menjadi biru
+        self.root.configure(bg="#87CEEB")
+
         menu = Menu(root)
-        menu.add_cascade(label='File')
-        menu.add_cascade(label='Edit')
-        menu.add_cascade(label='View')
-        menu.add_cascade(label='Help')
         self.root.config(menu=menu)
 
-        self.label_phone = Label(root, text="Nomor HP:", font=("Arial", 10))
+        # Tambahkan menu untuk fullscreen dan minimize
+        view_menu = Menu(menu, tearoff=0)
+        view_menu.add_command(label="Fullscreen", command=self.toggle_fullscreen)
+        view_menu.add_command(label="Minimize", command=self.minimize_window)
+        menu.add_cascade(label="View", menu=view_menu)
+
+        self.label_phone = Label(root, text="Nomor HP:", font=("Arial", 10), bg="#87CEEB", fg="#ffffff")
         self.label_phone.place(x=30, y=20)
 
-        self.phone_entry = Entry(root, width=20, font=("Arial", 10))
+        self.phone_entry = Entry(root, width=20, font=("Arial", 10), bg="#ffffff", fg="#333", bd=2, relief="groove")
         self.phone_entry.place(x=150, y=20)
 
-        self.label_network = Label(root, text="Pilih Jaringan:", font=("Arial", 10))
+        self.label_network = Label(root, text="Pilih Jaringan:", font=("Arial", 10), bg="#87CEEB", fg="#ffffff")
         self.label_network.place(x=30, y=60)
 
         self.network = ttk.Combobox(root, width=15, font=("Arial", 10), state="readonly")
@@ -30,13 +35,13 @@ class PulsaApp:
         self.network['values'] = ("Telkomsel", "Indosat", "XL", "Smartfren")
         self.network.bind("<<ComboboxSelected>>", self.show_price)
 
-        self.label_price = Label(root, text="Pilih Harga:", font=("Arial", 10))
+        self.label_price = Label(root, text="Pilih Harga:", font=("Arial", 10), bg="#87CEEB", fg="#ffffff")
         self.label_price.place(x=30, y=100)
 
         self.price = ttk.Combobox(root, width=15, font=("Arial", 10), state="readonly")
         self.price.place(x=150, y=100)
 
-        self.button_pay = Button(root, text="Pay", command=self.pay, font=("Arial", 10))
+        self.button_pay = Button(root, text="Pay", command=self.pay, font=("Arial", 10), bg="#4CAF50", fg="#fff", bd=0, relief="flat", activebackground="#45a049")
         self.button_pay.place(x=140, y=140)
 
         # Attributes
@@ -56,12 +61,7 @@ class PulsaApp:
         elif self.selected_network == "Smartfren":
             prices = [7000, 13000, 24000, 55000]
 
-        # Menggunakan perulangan untuk menambahkan item ke combobox
-        price_values = []
-        for price_value in prices:
-            price_values.append(price_value)
-        
-        self.price['values'] = price_values
+        self.price['values'] = prices
 
     def pay(self):
         self.selected_network = self.network.get()
@@ -71,7 +71,11 @@ class PulsaApp:
         if not self.selected_network or not self.selected_price or not self.phone_number:
             messagebox.showwarning("Warning", "Tolong isi semua kolom: jaringan, harga, dan nomor HP.")
             return
-        
+
+        if not self.phone_number.isdigit() or not (10 <= len(self.phone_number) <= 13):
+            messagebox.showwarning("Warning", "Nomor HP harus berisi angka dan memiliki panjang antara 10 hingga 13 karakter.")
+            return
+
         receipt_message = (
             f"Pembelian Pulsa Berhasil!\n"
             f"Nomor HP: {self.phone_number}\n"
@@ -80,10 +84,8 @@ class PulsaApp:
             "Detail Pembelian:\n"
         )
         
-       
         items = [
             {"description": "Biaya Administrasi", "amount": 2000},
-            {"description": "Pajak", "amount": 1000}
         ]
         
         for item in items:
@@ -91,27 +93,27 @@ class PulsaApp:
 
         messagebox.showinfo("Payment", receipt_message)
 
-    
+    def toggle_fullscreen(self):
+        self.root.attributes('-fullscreen', not self.root.attributes('-fullscreen'))
+
+    def minimize_window(self):
+        self.root.iconify()
+
     def selected_network(self):
         return self._selected_network
 
-   
     def selected_network(self, value):
         self._selected_network = value
 
-    
     def selected_price(self):
         return self._selected_price
 
-    
     def selected_price(self, value):
         self._selected_price = value
 
-    
     def phone_number(self):
         return self._phone_number
 
-    
     def phone_number(self, value):
         self._phone_number = value
 
@@ -119,3 +121,4 @@ if __name__ == "__main__":
     root = Tk()
     app = PulsaApp(root)
     root.mainloop()
+
