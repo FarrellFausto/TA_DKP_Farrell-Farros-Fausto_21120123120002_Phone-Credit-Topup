@@ -5,7 +5,7 @@ from tkinter import ttk
 class PulsaApp:
     def __init__(self, root):
         self.root = root
-        self.root.geometry("320x300")
+        self.root.geometry("320x400")
         self.root.title("Pembelian Pulsa")
         self.root.resizable(width=0, height=0)
 
@@ -42,6 +42,11 @@ class PulsaApp:
         self.button_pay = Button(root, text="Pay", command=self.pay, font=("Arial", 10), bg="#4CAF50", fg="#fff", bd=0, relief="flat", activebackground="#45a049")
         self.button_pay.place(x=140, y=140)
 
+        self.text_box = Text(root, height=5, width=40, font=("Arial", 10), bg="#ffffff", fg="#333", bd=2, relief="groove")
+        self.text_box.place(x=20, y=200)
+        self.text_box.config(state=DISABLED)
+
+        # Attributes
         self._selected_network = ""
         self._selected_price = 0
         self._phone_number = ""
@@ -78,17 +83,18 @@ class PulsaApp:
             f"Nomor HP: {self.phone_number}\n"
             f"Jaringan: {self.selected_network}\n"
             f"Harga: {self.selected_price}\n"
-            "Detail Pembelian:\n"
         )
-        
         items = [
             {"description": "Biaya Administrasi", "amount": 2000},
         ]
         
         for item in items:
             receipt_message += f"- {item['description']}: {item['amount']}\n"
-
-        messagebox.showinfo("Payment", receipt_message)
+            
+        self.text_box.config(state=NORMAL)
+        self.text_box.delete(1.0, END)
+        self.text_box.insert(END, receipt_message)
+        self.text_box.config(state=DISABLED)
 
     def toggle_fullscreen(self):
         self.root.attributes('-fullscreen', not self.root.attributes('-fullscreen'))
@@ -118,4 +124,3 @@ if __name__ == "__main__":
     root = Tk()
     app = PulsaApp(root)
     root.mainloop()
-
